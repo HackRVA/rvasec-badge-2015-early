@@ -81,6 +81,7 @@ getTouchUL:
 
 
 #define TOUCH_UL (1 << 5)
+   la      a0, PORTC
 
    /* pull up off */
    la      t0, CNPUCCLR
@@ -106,8 +107,6 @@ getTouchUL:
    la      t0, CNPUCSET
    ori     t1, zero, TOUCH_UL
    sw      t1, 0(t0)
-
-   la      a0, PORTC
 
    lw      s0, 0(a0)
    lw      s1, 0(a0)
