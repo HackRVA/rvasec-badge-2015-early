@@ -595,6 +595,59 @@ void setupStates(void)
         set_backlight_state.next_state = &set_backlight_state;
 }
 
+void setupStates15(void)
+{
+    initBadgeState(&start_state);
+        start_state.next_state = &start_state;
+        start_state.state_handler = touchCalibrate;//auto_contrast; //menu_maker;//touchCalibrate;//main_menu;//tunnelFlight; // //
+        start_state.slide_handler = autoSlide;
+
+    initBadgeState(&sketch_state);
+        sketch_state.state_handler = sliderPlay;
+        sketch_state.next_state = &sketch_state;
+
+//    initBadgeState(&manual_contrast_state);
+//        manual_contrast_state.state_handler = manual_contrast;
+//        manual_contrast_state.next_state = &manual_contrast_state;
+//
+//    initBadgeState(&snake_state);
+//        snake_state.state_handler = snake;
+//        snake_state.next_state = &snake_state;
+//
+//    initBadgeState(&bird_state);
+//        bird_state.state_handler = badgy_bird;
+//        bird_state.next_state = &bird_state;
+//        bird_state.slide_handler = basicSlide;
+//
+//    initBadgeState(&schedule_browse_state);
+//        schedule_browse_state.state_handler = browse_schedule;
+//        schedule_browse_state.next_state = &schedule_browse_state;
+//
+//    initBadgeState(&set_time_state);
+//        set_time_state.state_handler = adjust_time;
+//        set_time_state.next_state = &set_time_state;
+//
+//    initBadgeState(&image_viewer_state);
+//        image_viewer_state.state_handler = image_viewer;
+//        image_viewer_state.next_state = &image_viewer_state;
+//
+//    initBadgeState(&screen_saver_setup_state);
+//        screen_saver_setup_state.state_handler = setup_screen_saver;
+//        screen_saver_setup_state.next_state = &screen_saver_setup_state;
+//
+//    initBadgeState(&screen_saver_state);
+//        screen_saver_state.state_handler = gogo_screen_saver;
+//        screen_saver_state.next_state = &screen_saver_state;
+//
+//    initBadgeState(&ping_state);
+//        ping_state.state_handler = user_ping;
+//        ping_state.next_state = &ping_state;
+//
+//    initBadgeState(&set_backlight_state);
+//        set_backlight_state.state_handler = adjust_backlight;
+//        set_backlight_state.next_state = &set_backlight_state;
+}
+
 extern unsigned char G_IRrecvVal;
 extern unsigned char G_IRsendVal;
 extern unsigned char G_IRsend;
@@ -632,6 +685,44 @@ struct BadgeState* Init_Game(void)
         G_IRrecvVal = 0;
         G_IRsend = 0;
         G_bitCnt = 0;
+    return (struct BadgeState *)&start_state;
+    //return &bird_state;
+    //return &ping_state;
+}
+
+struct BadgeState* Init_Game15(void)
+{
+    //backlight
+    LATBbits.LATB7 = 1;
+    button_pressed = button_cnt = button_used = 0;
+    btm_size = side_size = 0;
+
+    LCDInit();
+    LCDClear();
+    initGFX();
+
+    setupStates15();
+    //setupMenus();
+    //initConferenceEvents();
+
+//    start_state.tm.l=0;
+//    start_state.tm.sec=0x00;
+//    start_state.tm.min=0x20;
+//    start_state.tm.hour=0x08;
+//
+//    start_state.dt.wday=4;
+//    start_state.dt.mday=0x05;
+//    start_state.dt.mon=0x06;
+//    start_state.dt.year=0x14;
+
+//    setupRTCC();
+//    RtccSetTimeDate(start_state.tm.l, start_state.dt.l);
+//    int TimerInit(void);
+//    TimerInit();
+//        G_IRrecv = 0;
+//        G_IRrecvVal = 0;
+//        G_IRsend = 0;
+//        G_bitCnt = 0;
     return (struct BadgeState *)&start_state;
     //return &bird_state;
     //return &ping_state;
@@ -1410,7 +1501,7 @@ void* touchCalibrate(struct BadgeState *b_state)
                 = b_state->counter_2
                 = b_state->big_counter_1 = 0;
             current_menu = &main_page;
-            b_state->state_handler = menu_maker;//main_menu;//welcome;
+            b_state->state_handler = spriteMaker15;//menu_maker;//main_menu;//welcome;
 
     }
 }
@@ -2007,6 +2098,107 @@ void* sliderPlay(struct BadgeState *b_state)
 //        b_state->counter_2 = 0;
     }
     
+    if(b_state->slide_states.bottom_hold_count > DEBOUNCE)
+    {
+        xor = ~xor;
+        b_state->slide_states.bottom_hold_count = 0;
+    }
+
+    set_leds(leds ^ xor);
+    return 0;
+}
+
+void* spriteMaker15(struct BadgeState *b_state)
+{
+    static unsigned char x = 20, y = 20;
+    static unsigned char leds = 0b00011000;
+    static unsigned char xor = 0x00;
+
+    char putPix = 0;
+    b_state->slide_handler(&b_state->slide_states);
+
+    //set_leds(b_state->slide_states.front.lower_loc);
+    char lr_swipe = b_state->slide_states.front.lr_swipe;
+    char bt_swipe = b_state->slide_states.front.bt_swipe;
+
+    if(lr_swipe > 0)
+    {
+        struct pix_buff buff;
+        buff.height = 4;
+        buff.width = 4;
+        unsigned char pix[4] = {0x00, 0x00, 0x00, 0x00};
+        buff.pixels = pix;
+
+        struct coord loc;
+        loc.x = 0;
+        loc.y = 0;
+
+        //draw_square(&buff, loc, 4, 4);
+
+        if(leds != 0x03)
+        {
+            leds >>= 1;
+            b_state->counter_1 = 0;
+        }
+
+//        if(xor)
+//            blitBuff(&buff, x, y);
+        //    putPixel(x,y,0);
+        x += 1;
+
+        putPix = 1;
+    }
+    else if (lr_swipe < 0)
+    {
+        if(leds != 0xC0)
+        {
+            leds <<= 1;
+
+            b_state->counter_1 = 0;
+        }
+        if(xor)
+            putPixel(x,y,0);
+        x -= 1;
+        putPix = 1;
+    }
+
+    if(bt_swipe > 0)
+    {
+        if(leds != 0x03)
+        {
+            leds >>= 1;
+            b_state->counter_1 = 0;
+        }
+        if(xor)
+            putPixel(x,y,0);
+        y -= 1;
+        putPix = 1;
+    }
+    else if (bt_swipe < 0)
+    {
+        if(leds != 0xC0)
+        {
+            leds <<= 1;
+
+            b_state->counter_1 = 0;
+        }
+        if(xor)
+            putPixel(x,y,0);
+        y += 1;
+        putPix = 1;
+    }
+
+    if(putPix)
+        putPixel(x, y, 1);
+
+    else if ( button_pressed == 250 )
+    {
+        LCDClear();
+//        start_state.next_state = &start_state;
+//        b_state->next_state = &start_state;
+//        b_state->counter_2 = 0;
+    }
+
     if(b_state->slide_states.bottom_hold_count > DEBOUNCE)
     {
         xor = ~xor;

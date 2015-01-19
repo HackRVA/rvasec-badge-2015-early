@@ -87,7 +87,7 @@ int main(void)
     #endif
 
     #if defined(GAME_MODE)
-        game_state = Init_Game();
+        game_state = Init_Game15();
     #endif
     while(1)
     {

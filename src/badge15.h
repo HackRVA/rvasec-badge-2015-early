@@ -161,6 +161,7 @@ struct menu_page
 
 //returns an initial state sequence
 struct BadgeState* Init_Game(void);
+struct BadgeState* Init_Game15(void);
 
 //runs the handler in the first state sequence
 void Run_Game(struct BadgeState **state);
@@ -170,8 +171,14 @@ unsigned char popQueue(struct Queue *queue);
 unsigned char pushQueue(struct Queue *queue, unsigned char item);
 void updateQueue(struct Queue queue, void *item );
 void initGFX(void);
-void setupMenus(void);
+void initGFX(void);
+
 void setupStates(void);
+void setupStates15(void);
+
+void setupMenus(void);
+void setupMenus15(void);
+
 
 void initTouchState(struct TouchState *t_state);
 void initBadgeState(struct BadgeState *b_state);
@@ -208,6 +215,8 @@ void zeroStateCounters(struct BadgeState* b_state);
 void* auto_contrast(struct BadgeState *b_state);
 void* adjust_time(struct BadgeState *b_state);
 void* adjust_backlight(struct BadgeState *b_state);
+
+void* spriteMaker15(struct BadgeState *b_state);
 
 void* sliderPlay(struct BadgeState *b_state);
 void* snake(struct BadgeState *b_state);
