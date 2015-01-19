@@ -118,8 +118,14 @@ struct BadgeState
     //what function should be handed this state
     void* (*state_handler)(struct BadgeState* b_state);
 
-    //what function should be handed this state
-    void* (*next_state_handler)(struct BadgeState* b_state);
+    //what function should be handed this state when switch state is called
+    //void* (*next_state_handler)(struct BadgeState* b_state);
+    
+    //Function called when state is being entered (2015)
+    void (*onEnter)(struct BadgeState* b_state);
+
+    //Function called when state is being exited (2015)
+    void (*onExit)(struct BadgeState* b_state);
 
     //states may have different uses for the sliders
     void* (*slide_handler)(struct TouchQueue *t_queue);
@@ -201,6 +207,8 @@ unsigned char calibrateBottom2(struct BadgeState *b_state);
 
 unsigned char calibrateSide(struct BadgeState *b_state);
 unsigned char calibrateSide2(struct BadgeState *b_state);
+
+void switch_state(struct BadgeState* b_state);
 
 //don't use as a standalone state
 void* draw_main_ticker(struct BadgeState *b_state);

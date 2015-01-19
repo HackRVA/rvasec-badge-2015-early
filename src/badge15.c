@@ -768,6 +768,25 @@ void Run_Game(struct BadgeState **state)
     (*state)->state_handler(*state);
 }
 
+// This function does:
+//  1.) Set current_state->next_state = next_state
+//  1.) Call onExit(current_state)
+//  2.) Call onEnter(next_state)
+void switch_state(struct BadgeState* current_state,
+                  struct BadgeState* next_state)
+{
+    // Maybe add previous state? Make both states aware of eachother
+    current_state->next_state = next_state;
+
+    // Do some clean up or prep for next state
+    current_state->onExit(current_state);
+
+    // Do prepwork before entering state
+    //  (clear screen, init LEDs, etc)
+    next_state->onEnter(next_state);
+    
+}
+
 void* defaultIR(struct BadgeState *b_state)
 {
     
