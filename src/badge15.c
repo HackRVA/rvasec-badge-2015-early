@@ -100,6 +100,8 @@ void initBadgeState(struct BadgeState *b_state)
     b_state->state_handler = 0;
     b_state->slide_handler = autoSlide;
     b_state->ir_handler = defaultIR;
+    b_state->onEnter = 0;
+    b_state->onExit = 0;
 
     //set touch to zero
     initTouchState(&b_state->slide_states.front);
@@ -170,7 +172,8 @@ const char screen_saver_txt[] = "SCREEN SAVER" ,
 struct BadgeState snake_state, sketch_state, manual_contrast_state,
                     bird_state, schedule_browse_state, set_time_state,
                     image_viewer_state, screen_saver_setup_state,
-                    screen_saver_state, ping_state, set_backlight_state;
+                    screen_saver_state, ping_state, set_backlight_state,
+                    sprite_maker_state;
 
 void initGFX(void)
 {
@@ -606,6 +609,9 @@ void setupStates15(void)
         sketch_state.state_handler = sliderPlay;
         sketch_state.next_state = &sketch_state;
 
+    initBadgeState(&sprite_maker_state);
+        sprite_maker_state.state_handler = spriteMaker15;
+        sprite_maker_state.next_state    = &sprite_maker_state;
 //    initBadgeState(&manual_contrast_state);
 //        manual_contrast_state.state_handler = manual_contrast;
 //        manual_contrast_state.next_state = &manual_contrast_state;
@@ -778,12 +784,14 @@ void switch_state(struct BadgeState* current_state,
     // Maybe add previous state? Make both states aware of eachother
     current_state->next_state = next_state;
 
-    // Do some clean up or prep for next state
-    current_state->onExit(current_state);
+    if(current_state->onExit)
+        // Do some clean up or prep for next state
+        current_state->onExit(current_state);
 
-    // Do prepwork before entering state
-    //  (clear screen, init LEDs, etc)
-    next_state->onEnter(next_state);
+    if(next_state->onEnter)
+        // Do prepwork before entering state
+        //  (clear screen, init LEDs, etc)
+        next_state->onEnter(next_state);
     
 }
 
@@ -1520,7 +1528,9 @@ void* touchCalibrate(struct BadgeState *b_state)
                 = b_state->counter_2
                 = b_state->big_counter_1 = 0;
             current_menu = &main_page;
-            b_state->state_handler = spriteMaker15;//menu_maker;//main_menu;//welcome;
+
+            switch_state(b_state, &sprite_maker_state);
+            //b_state->state_handler = spriteMaker15;//menu_maker;//main_menu;//welcome;
 
     }
 }
