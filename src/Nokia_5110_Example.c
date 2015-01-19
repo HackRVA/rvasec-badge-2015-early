@@ -17,7 +17,7 @@
  You will need 5 signal lines to connect to the LCD, 3.3 or 5V for power, 3.3V for LED backlight, and 1 for ground.
  */
 #include "nokia.h"
-#include "badge_common.h"
+#include "./badge_common.h"
 
 //char gContrast=0xB0;
 char gContrast=185;

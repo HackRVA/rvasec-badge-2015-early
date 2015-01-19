@@ -4,6 +4,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f2" displayName="Stages15" projectFiles="true">
+        <itemPath>../src/Stages15/SpriteMaker.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1" displayName="USB" projectFiles="true">
         <itemPath>../src/USB/usb.h</itemPath>
         <itemPath>../src/USB/usb_ch9.h</itemPath>
@@ -33,6 +36,9 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Common" projectFiles="true">
         <itemPath>../src/Common/uart2.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f3" displayName="Stages15" projectFiles="true">
+        <itemPath>../src/Stages15/SpriteMaker.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="USB" projectFiles="true">
         <itemPath>../src/USB/usb_device.c</itemPath>
@@ -67,7 +73,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>1.33</languageToolchainVersion>
+        <languageToolchainVersion></languageToolchainVersion>
         <platform>2</platform>
       </toolsSet>
       <compileType>
@@ -115,6 +121,7 @@
         <property key="use-cci" value="false"/>
         <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
+        <appendMe value="-w"/>
       </C32>
       <C32-AR>
         <property key="additional-options-chop-files" value="false"/>

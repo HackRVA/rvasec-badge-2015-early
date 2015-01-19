@@ -11,10 +11,12 @@
 #include "badge_common.h"
 #include "gfx_assets.h"
 
+
+
 #define PING 0x0f
 #define PONG 0x0e
 #define MSG 0x0d
-
+#define DEBOUNCE 15
 #define SLOWEST_RATE 5000
 static unsigned int backlight_cnt = 2, backlight_rate = 2;
 
@@ -225,7 +227,6 @@ void* auto_contrast(struct BadgeState *b_state);
 void* adjust_time(struct BadgeState *b_state);
 void* adjust_backlight(struct BadgeState *b_state);
 
-void* spriteMaker15(struct BadgeState *b_state);
 
 void* sliderPlay(struct BadgeState *b_state);
 void* snake(struct BadgeState *b_state);
