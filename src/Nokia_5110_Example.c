@@ -683,6 +683,10 @@ void clear_screen_buff(void)
 //Clears the LCD by writing zeros to the entire screen
 void LCDClear(void) {
   unsigned char y, x;
+
+  //start from home position
+  gotoXY(0, 0);
+
   //for (index = 0 ; index < (LCD_X * LCD_Y / 8) ; index++)
   for (y = 0 ; y < 6 ; y++)
   {
@@ -692,7 +696,7 @@ void LCDClear(void) {
           screen_buf[y][x] = 0x00;
       }
   }
-  current_index = 0;
+  
   gotoXY(0, 0); //After we clear the display, return to the home position
 }
 
