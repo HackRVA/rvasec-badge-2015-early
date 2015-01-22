@@ -98,7 +98,7 @@ void shiftTouchQueue(struct TouchQueue *queue)
 void initBadgeState(struct BadgeState *b_state)
 {
     //is zero still null on 32bit MCU?
-    b_state->next_state = 0;
+    b_state->next_state = b_state;
     b_state->state_handler = 0;
     b_state->slide_handler = autoSlide;
     b_state->ir_handler = defaultIR;
@@ -171,11 +171,13 @@ const char screen_saver_txt[] = "SCREEN SAVER" ,
            more_txt[] = "[MORE]";
 
 //main_page.entries;
-struct BadgeState snake_state, sketch_state, manual_contrast_state,
-                    bird_state, schedule_browse_state, set_time_state,
-                    image_viewer_state, screen_saver_setup_state,
-                    screen_saver_state, ping_state, set_backlight_state,
-                    sprite_maker_state;
+//struct BadgeState snake_state, sketch_state, manual_contrast_state,
+//                    bird_state, schedule_browse_state, set_time_state,
+//                    image_viewer_state, screen_saver_setup_state,
+//                    screen_saver_state, ping_state, set_backlight_state,
+//
+//                    sprite_maker_state, etch_a_sketch_state,
+//                    touch_calibrate_state;
 
 void initGFX(void)
 {
@@ -602,62 +604,9 @@ void setupStates(void)
 
 void setupStates15(void)
 {
-    initBadgeState(&start_state);
-        start_state.next_state = &start_state;
-        start_state.state_handler = touchCalibrate;//auto_contrast; //menu_maker;//touchCalibrate;//main_menu;//tunnelFlight; // //
-        start_state.slide_handler = autoSlide;
-
-    initBadgeState(&sketch_state);
-        sketch_state.next_state = &sketch_state;
-        sketch_state.state_handler = sliderPlay;
-        
-
-    initBadgeState(&sprite_maker_state);
-        sprite_maker_state.next_state    = &sprite_maker_state;
-        sprite_maker_state.state_handler = spriteMaker15;
-        sprite_maker_state.onEnter       = spriteMaker15_onEnter;
-        sprite_maker_state.onExit        = spriteMaker15_onExit;
-
-//    initBadgeState(&manual_contrast_state);
-//        manual_contrast_state.state_handler = manual_contrast;
-//        manual_contrast_state.next_state = &manual_contrast_state;
-//
-//    initBadgeState(&snake_state);
-//        snake_state.state_handler = snake;
-//        snake_state.next_state = &snake_state;
-//
-//    initBadgeState(&bird_state);
-//        bird_state.state_handler = badgy_bird;
-//        bird_state.next_state = &bird_state;
-//        bird_state.slide_handler = basicSlide;
-//
-//    initBadgeState(&schedule_browse_state);
-//        schedule_browse_state.state_handler = browse_schedule;
-//        schedule_browse_state.next_state = &schedule_browse_state;
-//
-//    initBadgeState(&set_time_state);
-//        set_time_state.state_handler = adjust_time;
-//        set_time_state.next_state = &set_time_state;
-//
-//    initBadgeState(&image_viewer_state);
-//        image_viewer_state.state_handler = image_viewer;
-//        image_viewer_state.next_state = &image_viewer_state;
-//
-//    initBadgeState(&screen_saver_setup_state);
-//        screen_saver_setup_state.state_handler = setup_screen_saver;
-//        screen_saver_setup_state.next_state = &screen_saver_setup_state;
-//
-//    initBadgeState(&screen_saver_state);
-//        screen_saver_state.state_handler = gogo_screen_saver;
-//        screen_saver_state.next_state = &screen_saver_state;
-//
-//    initBadgeState(&ping_state);
-//        ping_state.state_handler = user_ping;
-//        ping_state.next_state = &ping_state;
-//
-//    initBadgeState(&set_backlight_state);
-//        set_backlight_state.state_handler = adjust_backlight;
-//        set_backlight_state.next_state = &set_backlight_state;
+    construct_TouchCalibrate15(&touch_calibrate_state);
+    construct_spriteMaker15(&sprite_maker_state);
+    construct_EtchASketch15(&etch_a_sketch_state);
 }
 
 extern unsigned char G_IRrecvVal;
@@ -735,7 +684,8 @@ struct BadgeState* Init_Game15(void)
 //        G_IRrecvVal = 0;
 //        G_IRsend = 0;
 //        G_bitCnt = 0;
-    return (struct BadgeState *)&start_state;
+    //return (struct BadgeState *)&start_state;
+    return (struct BadgeState *)&touch_calibrate_state;
     //return &bird_state;
     //return &ping_state;
 }
@@ -969,11 +919,7 @@ void* user_ping(struct BadgeState *b_state)
 //////////////////////////////
 //PERIPH HANDLERS
 //////////////////////////////
-char G_lower_slider_left;
-char G_lower_slider_right;
 
-char G_side_slider_right;
-char G_side_slider_left;
 
 //how many ticks before taking another sample
 #define SAMPLE_RATE 3500

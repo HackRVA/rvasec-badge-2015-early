@@ -167,6 +167,22 @@ struct menu_page
     void* (*extra_func)(struct BadgeState *b_state);
 };
 
+char G_lower_slider_left;
+char G_lower_slider_right;
+
+char G_side_slider_right;
+char G_side_slider_left;
+
+//States
+struct BadgeState snake_state, sketch_state, manual_contrast_state,
+                    bird_state, schedule_browse_state, set_time_state,
+                    image_viewer_state, screen_saver_setup_state,
+                    screen_saver_state, ping_state, set_backlight_state,
+
+                    sprite_maker_state, etch_a_sketch_state,
+                    touch_calibrate_state;
+
+
 //returns an initial state sequence
 struct BadgeState* Init_Game(void);
 struct BadgeState* Init_Game15(void);
