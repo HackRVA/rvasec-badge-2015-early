@@ -122,7 +122,23 @@ int main(void)
 
 		// Application-specific tasks.
 		// Application related code may be added here, or in the ProcessIO() function.
-        ProcessIO();
+        //ProcessIO();
+        //C short circuit makes this work
+        if(PORTBbits.RB13 && button_pressed < 250)
+        {
+            button_pressed += 1;
+        }
+        else if (!PORTBbits.RB13)
+        {
+            button_cnt = 0;
+            button_pressed = 0;
+        }
+
+        getTouchUL();
+        getTouchUR();
+
+        getTouchRU();
+        getTouchRL();
     #if defined(GAME_MODE)
          Run_Game(&game_state);
         //welcome(game_state);
@@ -413,22 +429,22 @@ void ProcessIO(void)
     //Blink the LEDs according to the USB device status
     //BlinkUSBStatus();
 
-    //C short circuit makes this work
-    if(PORTBbits.RB13 && button_pressed < 250)
-    {
-        button_pressed += 1;
-    }
-    else if (!PORTBbits.RB13)
-    {
-        button_cnt = 0;
-        button_pressed = 0;
-    }
-    
-    getTouchUL();
-    getTouchUR();
-
-    getTouchRU();
-    getTouchRL();
+//    //C short circuit makes this work
+//    if(PORTBbits.RB13 && button_pressed < 250)
+//    {
+//        button_pressed += 1;
+//    }
+//    else if (!PORTBbits.RB13)
+//    {
+//        button_cnt = 0;
+//        button_pressed = 0;
+//    }
+//
+//    getTouchUL();
+//    getTouchUR();
+//
+//    getTouchRU();
+//    getTouchRL();
 
     frontBack = PORTAbits.RA8 ;
     shake = PORTBbits.RB8 ;
