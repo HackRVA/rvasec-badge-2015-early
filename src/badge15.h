@@ -11,8 +11,6 @@
 #include "badge_common.h"
 #include "gfx_assets.h"
 
-
-
 #define PING 0x0f
 #define PONG 0x0e
 #define MSG 0x0d
@@ -23,6 +21,24 @@ static unsigned int backlight_cnt = 2, backlight_rate = 2;
 //size of buffers hold possible cap touch vals
 #define SIZE 7
 #define MAX_SIZE 7
+
+#define CONSTRUCT_PROTO(state_name) void* construct_##state_name##15(struct BadgeState *b_state)
+#define HANDLER_PROTO(state_name)  void* state_name##15(struct BadgeState *b_state)
+#define ON_ENTER_PROTO(state_name) void* state_name##15_onEnter(struct BadgeState *b_state)
+#define ON_EXIT_PROTO(state_name) void* state_name##15_onExit(struct BadgeState *b_state)
+
+#define DECLARE_BASE_STATE(state_name) \
+    CONSTRUCT_PROTO(state_name);\
+    HANDLER_PROTO(state_name);\
+    ON_ENTER_PROTO(state_name);\
+    ON_EXIT_PROTO(state_name);
+//    void* construct_##state_name##15(struct BadgeState *b_state);\
+//    void* state_name##15(struct BadgeState *b_state);\
+//    void* state_name##15_onEnter(struct BadgeState *b_state);\
+//    void* state_name##15_onExit(struct BadgeState *b_state);
+
+
+
 unsigned char btm_size, side_size;
 
 unsigned char bottom_left_pad[SIZE];
@@ -218,14 +234,7 @@ void* superSlide(struct TouchQueue *t_queue);
 //////////////////////////////
 // STATE HANDLERS
 //////////////////////////////
-void* touchCalibrate(struct BadgeState *b_state);
-void* touchCalibrate2(struct BadgeState *b_state);
 
-unsigned char calibrateBottom(struct BadgeState *b_state);
-unsigned char calibrateBottom2(struct BadgeState *b_state);
-
-unsigned char calibrateSide(struct BadgeState *b_state);
-unsigned char calibrateSide2(struct BadgeState *b_state);
 
 void switch_state(struct BadgeState* current_state,
                   struct BadgeState* next_state);
