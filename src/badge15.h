@@ -32,15 +32,18 @@ static unsigned int backlight_cnt = 2, backlight_rate = 2;
     HANDLER_PROTO(state_name);\
     ON_ENTER_PROTO(state_name);\
     ON_EXIT_PROTO(state_name);
-//    void* construct_##state_name##15(struct BadgeState *b_state);\
-//    void* state_name##15(struct BadgeState *b_state);\
-//    void* state_name##15_onEnter(struct BadgeState *b_state);\
-//    void* state_name##15_onExit(struct BadgeState *b_state);
 
+#define BASIC_CONSTRUCT(state_name)\
+    initBadgeState(b_state);\
+    b_state->state_handler = state_name##15;\
+    b_state->onEnter       = state_name##15_onEnter;\
+    b_state->onExit        = state_name##15_onExit;
+
+struct pix_buff main_buff, bird_idle_buff;
 
 
 unsigned char btm_size, side_size;
-
+unsigned char pix[504];
 unsigned char bottom_left_pad[SIZE];
 unsigned char bottom_right_pad[SIZE];
 
@@ -88,25 +91,25 @@ struct Queue
     unsigned char vals[QUEUE_SIZE];
 };
 
-struct CoOrd
-{
-    unsigned char x, y;
-};
-
-//movement vector
-struct Velocity
-{
-    unsigned char xV, yV;
-};
-
-//snake linked list
-struct SnakeSeg
-{
-    struct CoOrd location;
-    struct Velocity direction;
-    struct SnakeSeg *next;
-    
-};
+//struct CoOrd
+//{
+//    unsigned char x, y;
+//};
+//
+////movement vector
+//struct Velocity
+//{
+//    unsigned char xV, yV;
+//};
+//
+////snake linked list
+//struct SnakeSeg
+//{
+//    struct CoOrd location;
+//    struct Velocity direction;
+//    struct SnakeSeg *next;
+//
+//};
 
 //would be nice to make this more easily resizeable
 struct TouchQueue
@@ -196,7 +199,7 @@ struct BadgeState snake_state, sketch_state, manual_contrast_state,
                     screen_saver_state, ping_state, set_backlight_state,
 
                     sprite_maker_state, etch_a_sketch_state,
-                    touch_calibrate_state;
+                    touch_calibrate_state, snake_state;
 
 
 //returns an initial state sequence
