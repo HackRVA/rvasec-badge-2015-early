@@ -9,6 +9,7 @@
         <itemPath>../src/Stages15/EtchASketch.h</itemPath>
         <itemPath>../src/Stages15/TouchCalibrate.h</itemPath>
         <itemPath>../src/Stages15/Snake.h</itemPath>
+        <itemPath>../src/Stages15/BadgyBird.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="USB" projectFiles="true">
         <itemPath>../src/USB/usb.h</itemPath>
@@ -45,6 +46,7 @@
         <itemPath>../src/Stages15/EtchASketch.c</itemPath>
         <itemPath>../src/Stages15/TouchCalibrate.c</itemPath>
         <itemPath>../src/Stages15/Snake.c</itemPath>
+        <itemPath>../src/Stages15/BadgyBird.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="USB" projectFiles="true">
         <itemPath>../src/USB/usb_device.c</itemPath>
@@ -91,7 +93,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
+          <parseOnProdLoad>true</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
       </compileType>
