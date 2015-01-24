@@ -194,15 +194,16 @@ void initQueue(struct Queue *queue);
 unsigned char popQueue(struct Queue *queue);
 unsigned char pushQueue(struct Queue *queue, unsigned char item);
 void updateQueue(struct Queue queue, void *item );
-void initGFX(void);
+
+
 void initGFX(void);
 
-void setupStates(void);
 void setupStates15(void);
 
 void setupMenus(void);
 void setupMenus15(void);
 
+void pollIO15(void);
 
 void initTouchState(struct TouchState *t_state);
 void initBadgeState(struct BadgeState *b_state);

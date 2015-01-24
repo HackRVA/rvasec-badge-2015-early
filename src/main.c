@@ -124,21 +124,8 @@ int main(void)
 		// Application related code may be added here, or in the ProcessIO() function.
         //ProcessIO();
         //C short circuit makes this work
-        if(PORTBbits.RB13 && button_pressed < 250)
-        {
-            button_pressed += 1;
-        }
-        else if (!PORTBbits.RB13)
-        {
-            button_cnt = 0;
-            button_pressed = 0;
-        }
 
-        getTouchUL();
-        getTouchUR();
 
-        getTouchRU();
-        getTouchRL();
     #if defined(GAME_MODE)
          Run_Game(&game_state);
         //welcome(game_state);

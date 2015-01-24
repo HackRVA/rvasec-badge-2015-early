@@ -549,58 +549,6 @@ void setupMenus(void)
 
 }
 
-void setupStates(void)
-{
-    initBadgeState(&start_state);
-        start_state.next_state = &start_state;
-        start_state.state_handler = auto_contrast; //menu_maker;//touchCalibrate;//main_menu;//tunnelFlight; // //
-        start_state.slide_handler = autoSlide;
-        
-    initBadgeState(&sketch_state);
-        sketch_state.state_handler = sliderPlay;
-        sketch_state.next_state = &sketch_state;
-
-    initBadgeState(&manual_contrast_state);
-        manual_contrast_state.state_handler = manual_contrast;
-        manual_contrast_state.next_state = &manual_contrast_state;
-
-    initBadgeState(&snake_state);
-        snake_state.state_handler = snake;
-        snake_state.next_state = &snake_state;
-
-    initBadgeState(&bird_state);
-        bird_state.state_handler = badgy_bird;
-        bird_state.next_state = &bird_state;
-        bird_state.slide_handler = basicSlide;
-
-    initBadgeState(&schedule_browse_state);
-        schedule_browse_state.state_handler = browse_schedule;
-        schedule_browse_state.next_state = &schedule_browse_state;
-
-    initBadgeState(&set_time_state);
-        set_time_state.state_handler = adjust_time;
-        set_time_state.next_state = &set_time_state;
-
-    initBadgeState(&image_viewer_state);
-        image_viewer_state.state_handler = image_viewer;
-        image_viewer_state.next_state = &image_viewer_state;
-
-    initBadgeState(&screen_saver_setup_state);
-        screen_saver_setup_state.state_handler = setup_screen_saver;
-        screen_saver_setup_state.next_state = &screen_saver_setup_state;
-
-    initBadgeState(&screen_saver_state);
-        screen_saver_state.state_handler = gogo_screen_saver;
-        screen_saver_state.next_state = &screen_saver_state;
-
-    initBadgeState(&ping_state);
-        ping_state.state_handler = user_ping;
-        ping_state.next_state = &ping_state;
-
-    initBadgeState(&set_backlight_state);
-        set_backlight_state.state_handler = adjust_backlight;
-        set_backlight_state.next_state = &set_backlight_state;
-}
 
 void setupStates15(void)
 {
@@ -614,42 +562,7 @@ extern unsigned char G_IRsendVal;
 extern unsigned char G_IRsend;
 extern unsigned char G_IRrecv;
 extern unsigned char G_bitCnt;
-struct BadgeState* Init_Game(void)
-{
-    LATBbits.LATB7 = 1;
-    button_pressed = button_cnt = button_used = 0;
-    btm_size = side_size = 0;
 
-    LCDInit();
-    LCDClear();
-    initGFX();
-
-    setupStates();
-    setupMenus();
-    initConferenceEvents();
-
-    start_state.tm.l=0;
-    start_state.tm.sec=0x00;
-    start_state.tm.min=0x20;
-    start_state.tm.hour=0x08;
-
-    start_state.dt.wday=4;
-    start_state.dt.mday=0x05;
-    start_state.dt.mon=0x06;
-    start_state.dt.year=0x14;
-
-    setupRTCC();
-    RtccSetTimeDate(start_state.tm.l, start_state.dt.l);
-    int TimerInit(void);
-    TimerInit();
-        G_IRrecv = 0;
-        G_IRrecvVal = 0;
-        G_IRsend = 0;
-        G_bitCnt = 0;
-    return (struct BadgeState *)&start_state;
-    //return &bird_state;
-    //return &ping_state;
-}
 
 struct BadgeState* Init_Game15(void)
 {
@@ -697,6 +610,7 @@ void Run_Game(struct BadgeState **state)
     static unsigned int cnt = 0;
     *state = (*state)->next_state;
 
+    pollIO15();
     //don't need to update too often
 //    if( cnt++ == T_UPDATE_DELTA)
 //    {
@@ -749,6 +663,26 @@ void switch_state(struct BadgeState* current_state,
         //  (clear screen, init LEDs, etc)
         next_state->onEnter(next_state);
     
+}
+
+
+void pollIO15(void)
+{
+    if(PORTBbits.RB13 && button_pressed < 250)
+    {
+        button_pressed += 1;
+    }
+    else if (!PORTBbits.RB13)
+    {
+        button_cnt = 0;
+        button_pressed = 0;
+    }
+
+    getTouchUL();
+    getTouchUR();
+
+    getTouchRU();
+    getTouchRL();
 }
 
 void* defaultIR(struct BadgeState *b_state)
@@ -1195,436 +1129,7 @@ void* superSlide(struct TouchQueue *t_queue)
 //////////////////////////////
 // STATE HANDLERS
 //////////////////////////////
-void* touchCalibrate2(struct BadgeState *b_state)
-{  
-    if(!b_state->big_counter)
-    {
-        b_state->big_counter += calibrateBottom2(b_state);
-        //this prevents holding the button from incrementing more than
-        //once
-        if(button_pressed == 5 )
-        {
-            //button_pressed = 0;
-            b_state->counter_1 = 0;
-            b_state->counter_2 = 0;
-            b_state->big_counter = 1;
-        }
-    }
-    else if(b_state->big_counter == 1)
-    {
-        if(!++b_state->counter_1)
-        {
-            if(!++b_state->counter_2)
-                b_state->big_counter = 2;
 
-            LCDClear();
-            unsigned char str[btm_size*5 + 1];//*str = "DONE!";
-            unsigned char j, k;
-            for(j = 0; j < btm_size; j++)
-            {
-                k = 5*j;
-                str[k] = '[';
-                str[k+1] = 48 +  (unsigned char)bottom_left_pad[j];
-                str[k+2] = ',';
-                str[k+3] = 48 +  (unsigned char)bottom_right_pad[j];
-                str[k+4] = ']';
-            }
-            str[k+5] = 0;
-            LCDString(str);
-        }
-        
-        if(button_pressed == 5 )
-        {
-            //button_pressed = 0;
-            b_state->big_counter = 2;
-            b_state->counter_2 = 0;
-            b_state->counter_1 = 0;
-        }
-
-    }
-    else if (b_state->big_counter == 2)
-    {
-        b_state->big_counter += calibrateSide2(b_state);
-        if(button_pressed == 5 )
-        {
-           //button_pressed = 0;
-           b_state->counter_1 = 0;
-           b_state->counter_2 = 0;
-           b_state->big_counter = 3;
-        }
-    }
-    else if (b_state->big_counter == 3)
-    {
-        if(!++b_state->counter_1)
-        {
-            if(!++b_state->counter_2)
-                b_state->big_counter = 4;
-
-
-            LCDClear();
-            unsigned char str[side_size*5 + 1];//*str = "DONE!";
-            unsigned char j, k;
-            for(j = 0; j < side_size; j++)
-            {
-                k = 5*j;
-                str[k] = '(';
-                str[k+1] = 48 +  (unsigned char)side_left_pad[j];
-                str[k+2] = ',';
-                str[k+3] = 48 +  (unsigned char)side_right_pad[j];
-                str[k+4] = ')';
-            }
-            str[k+5 ] = 0;
-            LCDString(str);
-        }
-        if(button_pressed == 5 )
-            b_state->big_counter = 4;
-    }
-    else
-    {
-        LCDClear();
-        LCDLogo();
-
-        b_state->big_counter
-            = b_state->counter_1
-            = b_state->counter_2 = 0;
-        b_state->state_handler = menu_maker;//main_menu;//welcome;
-    }
-}
-
-//max_lower_btm, max_lower_top,
-//        max_side_left, max_side_right;
-unsigned char calibrateBottom2(struct BadgeState *b_state)
-{
-    //only sample occasionally
-    if(!b_state->counter_1++)
-    {
-        max_lower_left = G_lower_slider_left;
-        max_lower_right = G_lower_slider_right;
-        // check if buffered filled...should also have time out
-//        if(btm_size == MAX_SIZE)
-//        {
-//            b_state->counter_1 = 0;
-//            b_state->counter_2 = 0;
-//            return 1;
-//        }
-//        else
-//        {
-//            //first, search values and make sure it's not duplicate
-//            //  start search from beginning, stop where left off
-//            unsigned char i, j, k, found = 0;
-//            for(i = 0; i < btm_size && !found; i++)
-//            {
-//                //check if at least one doesn't match
-//                if (bottom_left_pad[i] == G_lower_slider_left
-//                   && bottom_right_pad[i] == G_lower_slider_right)
-//                {
-//                    found = 1;
-//                }
-//            }
-//
-//            //this sample is original and not 00
-//            if(!found && G_lower_slider_left && G_lower_slider_right)
-//            {
-//                bottom_left_pad[btm_size] = G_lower_slider_left;
-//                bottom_right_pad[btm_size] = G_lower_slider_right;
-//                btm_size++;
-//            }
-            LCDClear();
-            char *out = "  Calibrate\n   Bottom:\n";
-            LCDString(out);
-            printTouchVals(1, 0);
-//        }
-
-    }
-    return 0;
-}
-
-unsigned char calibrateSide2(struct BadgeState *b_state)
-{
-    //only sample occasionally
-    if(!b_state->counter_1++)
-    {
-        max_side_left = G_side_slider_left;
-        max_side_right = G_side_slider_right;
-        // check if buffered filled...should also have time out
-//        if(side_size == MAX_SIZE )
-//        {
-//            b_state->counter_1 = 0;
-//            b_state->counter_2 = 0;
-//            return 1;
-//        }
-//        else
-//        {
-//            //first, search values and make sure it's not duplicate
-//            unsigned char i, j, k, found = 0;
-//            for(i = 0; i < side_size && !found; i++)
-//            {
-//                //check if at least one doesn't match
-//                if (side_left_pad[i] == G_side_slider_left
-//                   && side_right_pad[i] == G_side_slider_right)
-//                {
-//                    found = 1;
-//                }
-//            }
-//
-//            //this sample is original
-//            if(!found && G_side_slider_left && G_side_slider_right)
-//            {
-//                side_left_pad[side_size] = G_side_slider_left;
-//                side_right_pad[side_size] = G_side_slider_right;
-//                side_size++;
-//            }
-
-            LCDClear();
-            char *out = "  Calibrate\n    Side:\n";
-            LCDString(out);
-            printTouchVals(0,1);
-    }
-    return 0;
-}
-
-void* touchCalibrate(struct BadgeState *b_state)
-{  
-    if(!b_state->big_counter)
-    {
-        b_state->big_counter += calibrateBottom(b_state);
-        //this prevents holding the button from incrementing more than
-        //once
-        if(button_pressed == 5 )
-        {
-            //button_pressed = 0;
-            b_state->counter_1 = 0;
-            b_state->counter_2 = 0;
-            b_state->big_counter = 1;
-        }
-    }
-    else if(b_state->big_counter == 1)
-    {
-        if(!++b_state->counter_1)
-        {
-            if(!++b_state->counter_2)
-                b_state->big_counter = 2;
-
-            LCDClear();
-            unsigned char str[btm_size*5 + 1];//*str = "DONE!";
-            unsigned char j, k;
-            for(j = 0; j < btm_size; j++)
-            {
-                k = 5*j;
-                str[k] = '[';
-                str[k+1] = 48 +  (unsigned char)bottom_left_pad[j];
-                str[k+2] = ',';
-                str[k+3] = 48 +  (unsigned char)bottom_right_pad[j];
-                str[k+4] = ']';
-            }
-            str[k+5] = 0;
-            LCDString(str);
-        }
-        
-        if(button_pressed == 5 )
-        {
-            //button_pressed = 0;
-            b_state->big_counter = 2;
-            b_state->counter_2 = 0;
-            b_state->counter_1 = 0;
-        }
-
-    }
-    else if (b_state->big_counter == 2)
-    {
-        b_state->big_counter += calibrateSide(b_state);
-        if(button_pressed == 5 )
-        {
-           //button_pressed = 0;
-           b_state->counter_1 = 0;
-           b_state->counter_2 = 0;
-           b_state->big_counter = 3;
-        }
-    }
-    else if (b_state->big_counter == 3)
-    {
-        if(!++b_state->counter_1)
-        {
-            if(!++b_state->counter_2)
-                b_state->big_counter = 4;
-
-
-            LCDClear();
-            unsigned char str[side_size*5 + 1];//*str = "DONE!";
-            unsigned char j, k;
-            for(j = 0; j < side_size; j++)
-            {
-                k = 5*j;
-                str[k] = '(';
-                str[k+1] = 48 +  (unsigned char)side_left_pad[j];
-                str[k+2] = ',';
-                str[k+3] = 48 +  (unsigned char)side_right_pad[j];
-                str[k+4] = ')';
-            }
-            str[k+5 ] = 0;
-            LCDString(str);
-        }
-        if(button_pressed == 250 )
-        {
-            button_pressed++;
-            b_state->big_counter = 4;
-
-        }
-    }
-    else
-    {
-//        LCDClear();
-//        LCDLogo();
-//            b_state->big_counter
-//                = b_state->counter_1
-//                = b_state->counter_2
-//                = b_state->big_counter_1 = 0;
-//            current_menu = &main_page;
-
-            switch_state(b_state, &sprite_maker_state);
-            //b_state->state_handler = spriteMaker15;//menu_maker;//main_menu;//welcome;
-
-    }
-}
-
-unsigned char calibrateBottom(struct BadgeState *b_state)
-{
-    //only sample occasionally
-    if(!b_state->counter_1++)
-    {
-        // check if buffered filled...should also have time out
-        if(btm_size == MAX_SIZE)
-        {
-            b_state->counter_1 = 0;
-            b_state->counter_2 = 0;
-            return 1;
-        }
-        else
-        {
-            //first, search values and make sure it's not duplicate
-            //  start search from beginning, stop where left off
-            unsigned char i, j, k, found = 0;
-            for(i = 0; i < btm_size && !found; i++)
-            {
-                //check if at least one doesn't match
-                if (bottom_left_pad[i] == G_lower_slider_left
-                   && bottom_right_pad[i] == G_lower_slider_right)
-                {
-                    found = 1;
-                }
-            }
-
-            //this sample is original and not 00
-            if(!found && G_lower_slider_left && G_lower_slider_right)
-            {
-                bottom_left_pad[btm_size] = G_lower_slider_left;
-                bottom_right_pad[btm_size] = G_lower_slider_right;
-                btm_size++;
-            }
-            LCDClear();
-            char *out = "  Calibrate\n   Bottom:\n";
-            LCDString(out);
-            printTouchVals(1, 0);
-        }
-
-    }
-    return 0;
-}
-
-unsigned char calibrateSide(struct BadgeState *b_state)
-{
-    //only sample occasionally
-    if(!b_state->counter_1++)
-    {
-        // check if buffered filled...should also have time out
-        if(side_size == MAX_SIZE )
-        {
-            b_state->counter_1 = 0;
-            b_state->counter_2 = 0;
-            return 1;
-        }
-        else
-        {
-            //first, search values and make sure it's not duplicate
-            unsigned char i, j, k, found = 0;
-            for(i = 0; i < side_size && !found; i++)
-            {
-                //check if at least one doesn't match
-                if (side_left_pad[i] == G_side_slider_left
-                   && side_right_pad[i] == G_side_slider_right)
-                {
-                    found = 1;
-                }
-            }
-
-            //this sample is original
-            if(!found && G_side_slider_left && G_side_slider_right)
-            {
-                side_left_pad[side_size] = G_side_slider_left;
-                side_right_pad[side_size] = G_side_slider_right;
-                side_size++;
-            }
-
-            LCDClear();
-            char *out = "  Calibrate\n    Side:\n";
-            LCDString(out);
-            printTouchVals(0,1);
-        }
-    }
-    return 0;
-}
-
-void* welcome(struct BadgeState *b_state)
-{
-
-    if(!++b_state->counter_1)
-        b_state->big_counter++;
-
-    if(b_state->big_counter < 20)
-        b_state->leds = 0x18;
-    
-    else if (b_state->big_counter < 40)
-        b_state->leds = 0x3C;
-
-    else if (b_state->big_counter < 60)
-        b_state->leds = 0x7E;
-
-    else if (b_state->big_counter < 80)
-        b_state->leds = 0xFF;
-
-    else
-    {
-        if(!b_state->counter_2)
-        {
-            LCDLogo();
-        }
-        else if(b_state->counter_2 == 15)
-        {
-            LCDClear();
-            LCD_RVASec_Logo();
-        }
-        
-        b_state->big_counter = 0;
-        b_state->counter_2++;
-        
-    }
-    set_leds(b_state->leds);
-
-    if(b_state->counter_2 == 30 || button_pressed == 250)
-    {
-        set_leds(0x00);
-        button_pressed++;
-        //LCDLogo();
-        LCDClear();
-        LCDInit();
-        b_state->big_counter = 0;
-        b_state->counter_2 = 0;
-        b_state->counter_1 = 0;
-        b_state->state_handler = touchCalibrate;
-
-    }
-    return 0;
-}
 
 void* tunnelFlight(struct BadgeState *b_state)
 {
@@ -1836,75 +1341,6 @@ void* menu_maker(struct BadgeState *b_state)
 #define RATE 4000
 #define MIN_CONTRAST 120
 #define MAX_CONTRAST 190
-void* auto_contrast(struct BadgeState *b_state)
-{
-    unsigned char redraw = 0;
-    // init
-    if(!b_state->counter_1)
-    {
-        b_state->counter_1 = 1;
-        b_state->counter_2 = 0;
-        b_state->big_counter = 0;
-        b_state->big_counter_1 = 0;
-        gContrast = 170;
-        LCDInit();
-    }
-
-    if(!b_state->big_counter_1--)
-    {
-        redraw = 1;
-        b_state->big_counter_1 = RATE;
-
-        //increasing contrast
-        if(!b_state->counter_2)
-        {
-            if(gContrast < MAX_CONTRAST)
-            {
-                gContrast++;
-                LCDInit();
-            }
-            else// start decreasing back down
-                b_state->counter_2 = 1;
-        }
-        else
-        {
-            if(gContrast > MIN_CONTRAST)
-            {
-                gContrast--;
-                LCDInit();
-            }
-            else// start decreasing back down
-                b_state->counter_2 = 0;
-        }
-    }
-    
-    if(redraw)
-    {
-        fill_buff(&main_buff, 0x00);
-        buffString(0, 0,
-                    "Press BTN when\n    this is\n   legible!",
-                    &main_buff);
-
-
-        blitBuff_opt(&main_buff, 0, 0);
-    }
-
-    if ( button_pressed == 250 )
-    {
-
-        LCDClear();
-        fill_buff(&main_buff, 0x00);
-
-        //current_menu = &main_page;
-//        start_state.next_state = &start_state;
-//        b_state->next_state = &start_state;
-        b_state->state_handler = welcome;
-        //zeroStateCounters(b_state);
-        button_pressed++;
-        return;
-
-    }
-}
 
 void* manual_contrast(struct BadgeState *b_state)
 {
@@ -1988,106 +1424,6 @@ void* manual_contrast(struct BadgeState *b_state)
 }
 
 #define DEBOUNCE 15
-void* sliderPlay(struct BadgeState *b_state)
-{
-    static unsigned char x = 20, y = 20;
-    static unsigned char leds = 0b00011000;
-    static unsigned char xor = 0x00;
-
-    char putPix = 0;
-    b_state->slide_handler(&b_state->slide_states);
-
-    //set_leds(b_state->slide_states.front.lower_loc);
-    char lr_swipe = b_state->slide_states.front.lr_swipe;
-    char bt_swipe = b_state->slide_states.front.bt_swipe;
-
-    if(lr_swipe > 0)
-    {
-        struct pix_buff buff;
-        buff.height = 4;
-        buff.width = 4;
-        unsigned char pix[4] = {0x00, 0x00, 0x00, 0x00};
-        buff.pixels = pix;
-
-        struct coord loc;
-        loc.x = 0;
-        loc.y = 0;
-
-        //draw_square(&buff, loc, 4, 4);
-
-        if(leds != 0x03)
-        {
-            leds >>= 1;
-            b_state->counter_1 = 0;
-        }
-        
-//        if(xor)
-//            blitBuff(&buff, x, y);
-        //    putPixel(x,y,0);
-        x += 1;
-
-        putPix = 1;
-    }
-    else if (lr_swipe < 0)
-    {
-        if(leds != 0xC0)
-        {
-            leds <<= 1;
-
-            b_state->counter_1 = 0;
-        }
-        if(xor)
-            putPixel(x,y,0);
-        x -= 1;
-        putPix = 1;
-    }
-
-    if(bt_swipe > 0)
-    {
-        if(leds != 0x03)
-        {
-            leds >>= 1;
-            b_state->counter_1 = 0;
-        }
-        if(xor)
-            putPixel(x,y,0);
-        y -= 1;
-        putPix = 1;
-    }
-    else if (bt_swipe < 0)
-    {
-        if(leds != 0xC0)
-        {
-            leds <<= 1;
-
-            b_state->counter_1 = 0;
-        }
-        if(xor)
-            putPixel(x,y,0);
-        y += 1;
-        putPix = 1;
-    }
-
-    if(putPix)
-        putPixel(x, y, 1);
-    
-    else if ( button_pressed == 250 )
-    {
-        LCDClear();
-//        start_state.next_state = &start_state;
-//        b_state->next_state = &start_state;
-//        b_state->counter_2 = 0;
-    }
-    
-    if(b_state->slide_states.bottom_hold_count > DEBOUNCE)
-    {
-        xor = ~xor;
-        b_state->slide_states.bottom_hold_count = 0;
-    }
-
-    set_leds(leds ^ xor);
-    return 0;
-}
 
 
 #define SNAKE_RATE 6000
@@ -2285,13 +1621,6 @@ void* badgy_bird(struct BadgeState *b_state)
     unsigned char score[] = "999";
     //static unsigned int pipe_rate_cnt = 0;
     struct coord loc;
-    //static struct coord pipe_locs[MAX_PIPES];
-
-//    b_state->slide_handler(&b_state->slide_states);
-//
-//    //set_leds(b_state->slide_states.front.lower_loc);
-//    char lr_swipe = b_state->slide_states.front.lr_swipe;
-//    char bt_swipe = b_state->slide_states.front.bt_swipe;
 
     //initialize things
     if(!b_state->counter_2)
