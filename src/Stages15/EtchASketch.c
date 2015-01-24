@@ -98,6 +98,7 @@ HANDLER_PROTO(EtchASketch)
     else if ( button_pressed == 250 )
     {
         LCDClear();
+        switch_state(b_state, &snake_state);
     }
 
     if(b_state->slide_states.bottom_hold_count > DEBOUNCE)

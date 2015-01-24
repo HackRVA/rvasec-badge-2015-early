@@ -3,12 +3,13 @@
 CONSTRUCT_PROTO(TouchCalibrate)
 {
     // Zero out and set other defaults
-    initBadgeState(b_state);
-
-    b_state->state_handler = TouchCalibrate15;
-
-    b_state->onEnter       = TouchCalibrate15_onEnter;
-    b_state->onExit        = TouchCalibrate15_onExit;
+//    initBadgeState(b_state);
+//
+//    b_state->state_handler = TouchCalibrate15;
+//
+//    b_state->onEnter       = TouchCalibrate15_onEnter;
+//    b_state->onExit        = TouchCalibrate15_onExit;
+    BASIC_CONSTRUCT(TouchCalibrate)
     return 0;
 }
 
