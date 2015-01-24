@@ -91,26 +91,6 @@ struct Queue
     unsigned char vals[QUEUE_SIZE];
 };
 
-//struct CoOrd
-//{
-//    unsigned char x, y;
-//};
-//
-////movement vector
-//struct Velocity
-//{
-//    unsigned char xV, yV;
-//};
-//
-////snake linked list
-//struct SnakeSeg
-//{
-//    struct CoOrd location;
-//    struct Velocity direction;
-//    struct SnakeSeg *next;
-//
-//};
-
 //would be nice to make this more easily resizeable
 struct TouchQueue
 {
@@ -199,7 +179,7 @@ struct BadgeState snake_state, sketch_state, manual_contrast_state,
                     screen_saver_state, ping_state, set_backlight_state,
 
                     sprite_maker_state, etch_a_sketch_state,
-                    touch_calibrate_state, snake_state;
+                    touch_calibrate_state, snake_state, badgy_bird_state;
 
 
 //returns an initial state sequence
