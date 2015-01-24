@@ -1,6 +1,6 @@
 #include "TouchCalibrate.h"
 
-void* construct_TouchCalibrate15(struct BadgeState *b_state)
+CONSTRUCT_PROTO(TouchCalibrate)
 {
     // Zero out and set other defaults
     initBadgeState(b_state);
@@ -12,7 +12,7 @@ void* construct_TouchCalibrate15(struct BadgeState *b_state)
     return 0;
 }
 
-void* TouchCalibrate15(struct BadgeState *b_state)
+HANDLER_PROTO(TouchCalibrate)
 {
     if(!b_state->big_counter)
     {
@@ -197,13 +197,13 @@ unsigned char TouchCalibrate15_calibrateSide(struct BadgeState *b_state)
 }
 
 
-void* TouchCalibrate15_onEnter(struct BadgeState *b_state)
+ON_ENTER_PROTO(TouchCalibrate)
 {
     LCDClear();
     return 0;
 }
 
-void* TouchCalibrate15_onExit(struct BadgeState *b_state)
+ON_EXIT_PROTO(TouchCalibrate)
 {
     return 0;
 }
