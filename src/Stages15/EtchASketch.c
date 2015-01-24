@@ -1,6 +1,7 @@
 #include "EtchASketch.h"
 
-void* construct_EtchASketch15(struct BadgeState *b_state)
+CONSTRUCT_PROTO(EtchASketch)
+//void* construct_EtchASketch15(struct BadgeState *b_state)
 {
     // Zero out and set other defaults
     initBadgeState(b_state);
@@ -12,8 +13,8 @@ void* construct_EtchASketch15(struct BadgeState *b_state)
     return 0;
 }
 
-
-void* EtchASketch15(struct BadgeState *b_state)
+HANDLER_PROTO(EtchASketch)
+//void* EtchASketch15(struct BadgeState *b_state)
 {
     static unsigned char x = 20, y = 20;
     static unsigned char leds = 0b00011000;
@@ -111,13 +112,15 @@ void* EtchASketch15(struct BadgeState *b_state)
     return 0;
 }
 
-void* EtchASketch15_onEnter(struct BadgeState *b_state)
+ON_ENTER_PROTO(EtchASketch)
+//void* EtchASketch15_onEnter(struct BadgeState *b_state)
 {
     LCDClear();
     return 0;
 }
 
-void* EtchASketch15_onExit(struct BadgeState *b_state)
+ON_EXIT_PROTO(EtchASketch)
+//void* EtchASketch15_onExit(struct BadgeState *b_state)
 {
     return 0;
 }
