@@ -7,7 +7,7 @@
 
 #ifndef SPRITEMAKER_H
 #define	SPRITEMAKER_H
-//#include "badge_common.h"
+
 #include "../badge15.h"
 #include "nokia.h"
 
