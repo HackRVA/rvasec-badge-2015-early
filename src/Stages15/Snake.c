@@ -156,7 +156,8 @@ HANDLER_PROTO(snake)
         {
 //            start_state.next_state = &start_state;
 //            b_state->next_state = &start_state;
-            switch_state(b_state, &snake_state);
+            //switch_state(b_state, &snake_state);
+            switch_state(b_state, &badgy_bird_state);
             b_state->counter_2 = 0;
         }
 
@@ -167,7 +168,8 @@ HANDLER_PROTO(snake)
             {
 //                start_state.next_state = &start_state;
 //                b_state->next_state = &start_state;
-                switch_state(b_state, &snake_state);
+                //switch_state(b_state, &snake_state);
+                switch_state(b_state, &badgy_bird_state);
                 b_state->counter_2 = 0;
             }
         }
