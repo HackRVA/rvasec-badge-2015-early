@@ -10,69 +10,12 @@ CONSTRUCT_PROTO(BadgyBird)
 HANDLER_PROTO(BadgyBird)
 {
     unsigned char i = 0, j = 0;
-    unsigned char opening_height = 27;
-    static unsigned char pipes_cleared = 0, last_cleared = 99;
-    unsigned char score[] = "999";
-    //static unsigned int pipe_rate_cnt = 0;
-    struct coord loc;
+   // unsigned char opening_height = 27;
 
-    //initialize things
-    if(!b_state->counter_2)
+    // paused start screen, move on if button pressed
+    if(b_state->counter_2 == 1)
     {
-        //unsigned char i, j;
-        char badgy_txt[] = "Badgy", bird_txt[] = "Bird";
-        LCDClear();
-        b_state->next_state = b_state;
-        collision = 0;
-        pipes_cleared = 0;
-        last_cleared = 99;
-
-        main_buff.pixels = pix;
-        main_buff.width = 84;
-        main_buff.height = 48;
-
-        b_state->counter_2 = 1;
-
-        //force update
-        b_state->big_counter = BIRD_RATE;
-        draw_pipe = 1;
-
-        loc.x = 0;
-        loc.y = 0;
-
-        //init all pipes
-        for(i = 0; i < MAX_PIPES; i++)
-        {
-            //255 will == not it use yet
-            pipe_locs[i].x = 0xff;
-            pipe_locs[i].y = 0xff;
-        }
-
-        b_state->counter_1 = 0;
-        bird_y = BIRD_ST_HIEGHT;
-        clear_screen_buff();
-        fill_buff(&main_buff, 0x00);
-        draw_square(&main_buff, loc, 83, 48);
-        buffString(31, 2,
-            badgy_txt,
-            &main_buff);
-        buffString(41, 10,
-                    bird_txt,
-                    &main_buff);
-        bird_idle_buff.pixels = bird_flap;
-
-        //setup paused screen
-        blitBuff_toBuff(&bird_idle_buff, &main_buff,
-                        20, (unsigned char) bird_y,
-                        ALPHA );
-
-        blitBuff_opt(&main_buff, 0, 0);
-
-    }
-    // paused start screen
-    else if(b_state->counter_2 == 1)
-    {
-        if ( button_pressed == 250)// || b_state->slide_states.bottom_hold_count > 2)
+        if(button_pressed == 250)
         {
             b_state->counter_2++;
             button_pressed++;
@@ -95,6 +38,7 @@ HANDLER_PROTO(BadgyBird)
             b_rand ^= ReadCoreTimer() & 0xff;
         }
 
+         // update occasionally
          if(b_state->big_counter++ > BIRD_RATE)
          {
              //clean things up
@@ -104,17 +48,8 @@ HANDLER_PROTO(BadgyBird)
              //hit floor or pipe, enter start screen after this draw
              if(collision)
              {
-
-                b_state->counter_2 = 0;
-                b_state->counter_1 = 0;
-                b_state->big_counter = 0;
-                b_state->big_counter_1 = 0;
-                fill_buff(&main_buff, 0x00);
-                //start_state.next_state = &start_state;
-                //b_state->next_state = &start_state;
-                b_state->counter_1 = 0;
                 switch_state(b_state, &badgy_bird_state);
-                return;
+                return 0;
              }
 
             //flapping bird, apply flap accel
@@ -133,7 +68,7 @@ HANDLER_PROTO(BadgyBird)
             //apply velocity
             bird_y += bird_y_vel;
 
-            if(bird_y_vel>0)
+            if(bird_y_vel > 0)
                 bird_idle_buff.pixels = bird_idle;
             else
                 bird_idle_buff.pixels = bird_flap;
@@ -173,13 +108,13 @@ HANDLER_PROTO(BadgyBird)
                         if(pipe_locs[j].x < PIPE_X_B4_ADD && !(b_rand % 3))
                         {
                             pipe_locs[i].x = 83 - PIPE_W - 1;
-                            pipe_locs[i].y = opening_height + (b_rand % 15);
+                            pipe_locs[i].y = PIPE_OPENING_HIEGHT + (b_rand % 15);
                         }
                     }
                     else if( !i )
                     {
                         pipe_locs[i].x = 83 - PIPE_W - 1;
-                        pipe_locs[i].y = opening_height + (b_rand % 15);
+                        pipe_locs[i].y = PIPE_OPENING_HIEGHT + (b_rand % 15);
                     }
                 }
                 //pipe needs drawing
@@ -202,6 +137,8 @@ HANDLER_PROTO(BadgyBird)
                     {
                         last_cleared = i;
                         pipes_cleared++;
+                        if(pipes_cleared > high_score)
+                            high_score = pipes_cleared;
                     }
                 }
             }
@@ -209,12 +146,10 @@ HANDLER_PROTO(BadgyBird)
             collision |= blitBuff_toBuff_collision(&bird_idle_buff, &main_buff,
                                                 BIRD_X, (unsigned char) bird_y, ALPHA );
 
-            score[0] = 48 + (pipes_cleared) / 100;
-            score[1] = 48 + (pipes_cleared) % 100 / 10;
-            score[2] = 48 + (pipes_cleared) % 100 % 10;
+            set_score(pipes_cleared);
 
             buffString(64, 2,
-                        score,
+                        score_str,
                         &main_buff);
 
             blitBuff_opt(&main_buff, 0, 0);
@@ -225,10 +160,83 @@ HANDLER_PROTO(BadgyBird)
 
 ON_ENTER_PROTO(BadgyBird)
 {
+    struct coord loc;
+    unsigned char i, j;
+    char badgy_txt[] = "Badgy", bird_txt[] = "Bird";
+
+    
+    b_state->counter_2      = 1;
+    b_state->counter_1      = 0;
+    b_state->big_counter    = BIRD_RATE;
+    b_state->big_counter_1  = 0;
+    b_state->counter_1      = 0;
+
+    draw_pipe               = 1;
+    collision               = 0;
+    pipes_cleared           = 0;
+    last_cleared            = 99;
+
+    main_buff.pixels = pix;
+    main_buff.width = 84;
+    main_buff.height = 48;
+
+    loc.x = 0;
+    loc.y = 0;
+
+    //init all pipes
+    for(i = 0; i < MAX_PIPES; i++)
+    {
+        pipe_locs[i].x = 0xff;
+        pipe_locs[i].y = 0xff;
+    }
+
+    bird_y = BIRD_ST_HIEGHT;
+
+    // prep LCD and screen buffer
+    LCDClear();
+    clear_screen_buff();
+    fill_buff(&main_buff, 0x00);
+
+    draw_square(&main_buff, loc, 83, 48);
+
+    buffString(31, 2,
+                badgy_txt,
+                &main_buff);
+
+    buffString(41, 10,
+                bird_txt,
+                &main_buff);
+
+    // show high score on start screen
+    if(high_score)
+    {
+        set_score(high_score);
+        buffString(45, 23,
+                    score_str,
+                    &main_buff);
+        set_score(0);
+    }
+
+    bird_idle_buff.pixels = bird_flap;
+
+    //setup paused screen
+    blitBuff_toBuff(&bird_idle_buff, &main_buff,
+                    20, (unsigned char) bird_y,
+                    ALPHA );
+
+    blitBuff_opt(&main_buff, 0, 0);
+
     return 0;
 }
 
 ON_EXIT_PROTO(BadgyBird)
 {
     return 0;
+}
+
+void set_score(unsigned char set_score)
+{
+    score_str[0] = 48 + (set_score) / 100;
+    score_str[1] = 48 + (set_score) % 100 / 10;
+    score_str[2] = 48 + (set_score) % 100 % 10;
 }
