@@ -3,12 +3,13 @@
 CONSTRUCT_PROTO(EtchASketch)
 {
     // Zero out and set other defaults
-    initBadgeState(b_state);
-
-    b_state->state_handler = EtchASketch15;
-
-    b_state->onEnter       = EtchASketch15_onEnter;
-    b_state->onExit        = EtchASketch15_onExit;
+//    initBadgeState(b_state);
+//
+//    b_state->state_handler = EtchASketch15;
+//
+//    b_state->onEnter       = EtchASketch15_onEnter;
+//    b_state->onExit        = EtchASketch15_onExit;
+    BASIC_CONSTRUCT(EtchASketch)
     return 0;
 }
 
@@ -95,7 +96,7 @@ HANDLER_PROTO(EtchASketch)
     if(putPix)
         putPixel(x, y, 1);
 
-    else if ( button_pressed == 250 )
+    else if ( BUTTON_IS_PRESSED__CONSUME )
     {
         LCDClear();
         switch_state(b_state, &snake_state);

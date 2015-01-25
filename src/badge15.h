@@ -39,6 +39,10 @@ static unsigned int backlight_cnt = 2, backlight_rate = 2;
     b_state->onEnter       = state_name##15_onEnter;\
     b_state->onExit        = state_name##15_onExit;
 
+
+#define BUTTON_IS_PRESSED__CONSUME \
+button_pressed == 250 && (button_pressed++)
+
 struct pix_buff main_buff, bird_idle_buff;
 
 

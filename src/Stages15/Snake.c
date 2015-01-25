@@ -3,10 +3,12 @@
 CONSTRUCT_PROTO(snake)
 {
     BASIC_CONSTRUCT(snake)
+    return 0;
 }
 
 HANDLER_PROTO(snake)
 {
+    unsigned char i = 0, j = 0;
     static struct CoOrd food;
     static struct SnakeSeg head;
     static struct pix_buff buff;
@@ -17,28 +19,21 @@ HANDLER_PROTO(snake)
     char lr_swipe = b_state->slide_states.front.lr_swipe;
     char bt_swipe = b_state->slide_states.front.bt_swipe;
 
-    if ( button_pressed == 250)
+    if (BUTTON_IS_PRESSED__CONSUME)
     {
-//        fill_buff(&main_buff, 0x00);
-//        start_state.next_state = &start_state;
-//        b_state->next_state = &start_state;
-//        b_state->counter_2 = 0;
-//        b_state->counter_1 = 0;
-//        b_state->big_counter = 0;
-        //return;
+        switch_state(b_state, &badgy_bird_state);
+        return 0;
     }
 
     if(bt_swipe < 0 && !snake_ll[0].direction.yV)
     {
         snake_ll[0].direction.yV = 1;
         snake_ll[0].direction.xV = 0;
-        //current_menu->selected += 1;
     }
     if(bt_swipe > 0 && !snake_ll[0].direction.yV )
     {
         snake_ll[0].direction.yV = -1;
         snake_ll[0].direction.xV = 0;
-        //current_menu->selected -= 1;
     }
     if(lr_swipe > 0 && !snake_ll[0].direction.xV)
     {
@@ -50,7 +45,7 @@ HANDLER_PROTO(snake)
         snake_ll[0].direction.yV = 0;
         snake_ll[0].direction.xV = -1;
     }
-    unsigned char i = 0, j = 0;
+
     if(!b_state->counter_2)
     {
         LCDClear();
@@ -82,9 +77,8 @@ HANDLER_PROTO(snake)
     //only update sometimes, game gets faster as snake gets bigger
     if(b_state->big_counter++ > (SNAKE_RATE - (b_state->counter_1 << 7) ))
     {
-        LCDClear();
-
         struct coord loc;
+        LCDClear();
 
         loc.x = 0;
         loc.y = 0;
@@ -101,8 +95,8 @@ HANDLER_PROTO(snake)
         score[1] = 48 + (b_state->counter_1 - SNAKE_START_SIZE) % 100 / 10;
         score[2] = 48 + (b_state->counter_1 - SNAKE_START_SIZE) % 100 % 10;
         buffString(loc.x+2, loc.y + 2,
-            score,
-            &main_buff);
+                    score,
+                    &main_buff);
 
         b_state->big_counter = 0;
 
@@ -154,11 +148,7 @@ HANDLER_PROTO(snake)
         if(snake_ll[0].location.x >= 83 || snake_ll[0].location.y >=46
            || snake_ll[0].location.x < 1  || snake_ll[0].location.y < 1)
         {
-//            start_state.next_state = &start_state;
-//            b_state->next_state = &start_state;
-            //switch_state(b_state, &snake_state);
             switch_state(b_state, &badgy_bird_state);
-            b_state->counter_2 = 0;
         }
 
         for(i = 1; i < b_state->counter_1; i++)
@@ -166,11 +156,7 @@ HANDLER_PROTO(snake)
             if(snake_ll[i].location.x == snake_ll[0].location.x
               && snake_ll[i].location.y == snake_ll[0].location.y)
             {
-//                start_state.next_state = &start_state;
-//                b_state->next_state = &start_state;
-                //switch_state(b_state, &snake_state);
                 switch_state(b_state, &badgy_bird_state);
-                b_state->counter_2 = 0;
             }
         }
         blitBuff_opt(&main_buff, 0, 0);
@@ -187,5 +173,8 @@ ON_ENTER_PROTO(snake)
 
 ON_EXIT_PROTO(snake)
 {
+    b_state->counter_2 = 0;
+    b_state->counter_1 = 0;
+    b_state->big_counter = 0;
     return 0;
 }

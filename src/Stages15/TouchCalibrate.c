@@ -2,13 +2,6 @@
 
 CONSTRUCT_PROTO(TouchCalibrate)
 {
-    // Zero out and set other defaults
-//    initBadgeState(b_state);
-//
-//    b_state->state_handler = TouchCalibrate15;
-//
-//    b_state->onEnter       = TouchCalibrate15_onEnter;
-//    b_state->onExit        = TouchCalibrate15_onExit;
     BASIC_CONSTRUCT(TouchCalibrate)
     return 0;
 }
@@ -18,11 +11,9 @@ HANDLER_PROTO(TouchCalibrate)
     if(!b_state->big_counter)
     {
         b_state->big_counter += TouchCalibrate15_calibrateBottom(b_state);
-        //this prevents holding the button from incrementing more than
-        //once
-        if(button_pressed == 5 )
+
+        if(BUTTON_IS_PRESSED__CONSUME)
         {
-            //button_pressed = 0;
             b_state->counter_1 = 0;
             b_state->counter_2 = 0;
             b_state->big_counter = 1;
@@ -51,9 +42,8 @@ HANDLER_PROTO(TouchCalibrate)
             LCDString(str);
         }
 
-        if(button_pressed == 5 )
+        if(BUTTON_IS_PRESSED__CONSUME)
         {
-            //button_pressed = 0;
             b_state->big_counter = 2;
             b_state->counter_2 = 0;
             b_state->counter_1 = 0;
@@ -63,9 +53,8 @@ HANDLER_PROTO(TouchCalibrate)
     else if (b_state->big_counter == 2)
     {
         b_state->big_counter += TouchCalibrate15_calibrateSide(b_state);
-        if(button_pressed == 5 )
+        if(BUTTON_IS_PRESSED__CONSUME)
         {
-           //button_pressed = 0;
            b_state->counter_1 = 0;
            b_state->counter_2 = 0;
            b_state->big_counter = 3;
@@ -94,11 +83,9 @@ HANDLER_PROTO(TouchCalibrate)
             str[k+5 ] = 0;
             LCDString(str);
         }
-        if(button_pressed == 250 )
+        if(BUTTON_IS_PRESSED__CONSUME )
         {
-            button_pressed++;
             b_state->big_counter = 4;
-
         }
     }
     else

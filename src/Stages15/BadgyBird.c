@@ -3,22 +3,19 @@
 CONSTRUCT_PROTO(BadgyBird)
 {
     BASIC_CONSTRUCT(BadgyBird)
-
     return 0;
 }
 
 HANDLER_PROTO(BadgyBird)
 {
     unsigned char i = 0, j = 0;
-   // unsigned char opening_height = 27;
 
     // paused start screen, move on if button pressed
     if(b_state->counter_2 == 1)
     {
-        if(button_pressed == 250)
+        if(BUTTON_IS_PRESSED__CONSUME)
         {
             b_state->counter_2++;
-            button_pressed++;
             y_acc_mag = -8;
             y_acc_length = 7;
             b_state->counter_1 = 0;
@@ -27,9 +24,8 @@ HANDLER_PROTO(BadgyBird)
     // game playing
     else
     {
-        if ( button_pressed == 250)// || b_state->slide_states.bottom_hold_count > 2)
+        if (BUTTON_IS_PRESSED__CONSUME)
         {
-            button_pressed++;
             y_acc_mag = -8;
             y_acc_length = 7;
             b_state->counter_1 = 0;
