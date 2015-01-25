@@ -22,10 +22,17 @@ static unsigned int backlight_cnt = 2, backlight_rate = 2;
 #define SIZE 7
 #define MAX_SIZE 7
 
-#define CONSTRUCT_PROTO(state_name) void* construct_##state_name##15(struct BadgeState *b_state)
-#define HANDLER_PROTO(state_name)  void* state_name##15(struct BadgeState *b_state)
-#define ON_ENTER_PROTO(state_name) void* state_name##15_onEnter(struct BadgeState *b_state)
-#define ON_EXIT_PROTO(state_name) void* state_name##15_onExit(struct BadgeState *b_state)
+#define CONSTRUCT_PROTO(state_name) \
+    void* construct_##state_name##15(struct BadgeState *b_state)
+
+#define HANDLER_PROTO(state_name) \
+    void* state_name##15(struct BadgeState *b_state)
+
+#define ON_ENTER_PROTO(state_name) \
+    void* state_name##15_onEnter(struct BadgeState *b_state)
+
+#define ON_EXIT_PROTO(state_name) \
+    void* state_name##15_onExit(struct BadgeState *b_state)
 
 #define DECLARE_BASE_STATE(state_name) \
     CONSTRUCT_PROTO(state_name);\
@@ -41,7 +48,10 @@ static unsigned int backlight_cnt = 2, backlight_rate = 2;
 
 
 #define BUTTON_IS_PRESSED__CONSUME \
-button_pressed == 250 && (button_pressed++)
+    button_pressed == 250 && (button_pressed++)
+
+#define BUTTON_IS_PRESSED\
+    button_pressed == 250
 
 struct pix_buff main_buff, bird_idle_buff;
 
