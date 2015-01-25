@@ -2,13 +2,6 @@
 
 CONSTRUCT_PROTO(EtchASketch)
 {
-    // Zero out and set other defaults
-//    initBadgeState(b_state);
-//
-//    b_state->state_handler = EtchASketch15;
-//
-//    b_state->onEnter       = EtchASketch15_onEnter;
-//    b_state->onExit        = EtchASketch15_onExit;
     BASIC_CONSTRUCT(EtchASketch)
     return 0;
 }
@@ -38,17 +31,12 @@ HANDLER_PROTO(EtchASketch)
         loc.x = 0;
         loc.y = 0;
 
-        //draw_square(&buff, loc, 4, 4);
-
         if(leds != 0x03)
         {
             leds >>= 1;
             b_state->counter_1 = 0;
         }
 
-//        if(xor)
-//            blitBuff(&buff, x, y);
-        //    putPixel(x,y,0);
         x += 1;
 
         putPix = 1;
@@ -97,10 +85,7 @@ HANDLER_PROTO(EtchASketch)
         putPixel(x, y, 1);
 
     else if ( BUTTON_IS_PRESSED__CONSUME )
-    {
-        LCDClear();
         switch_state(b_state, &snake_state);
-    }
 
     if(b_state->slide_states.bottom_hold_count > DEBOUNCE)
     {
