@@ -28,6 +28,9 @@ static unsigned int backlight_cnt = 2, backlight_rate = 2;
 #define HANDLER_PROTO(state_name) \
     void* state_name##15(struct BadgeState *b_state)
 
+#define HANDLER_REF(state_name) \
+    state_name##15
+
 #define ON_ENTER_PROTO(state_name) \
     void* state_name##15_onEnter(struct BadgeState *b_state)
 

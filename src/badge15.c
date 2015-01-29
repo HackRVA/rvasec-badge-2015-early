@@ -13,7 +13,7 @@ unsigned char pix2[504] = {0};
 
 
 unsigned char max_lower_left, max_lower_right,
-            max_side_left, max_side_right;
+              max_side_left, max_side_right;
 
 
 void zeroStateCounters(struct BadgeState* b_state)
@@ -97,12 +97,18 @@ void shiftTouchQueue(struct TouchQueue *queue)
 void initBadgeState(struct BadgeState *b_state)
 {
     //is zero still null on 32bit MCU?
-    b_state->next_state = b_state;
+    b_state->next_state    = b_state;
     b_state->state_handler = 0;
     b_state->slide_handler = autoSlide;
-    b_state->ir_handler = defaultIR;
-    b_state->onEnter = 0;
-    b_state->onExit = 0;
+    b_state->ir_handler    = defaultIR;
+    b_state->onEnter       = 0;
+    b_state->onExit        = 0;
+    b_state->leds          = 0;
+    b_state->counter_1     = 0;
+    b_state->counter_2     = 0;
+    b_state->big_counter   = 0;
+    b_state->big_counter_1 = 0;
+    b_state->ir_recvd_msg  = 0;
 
     //set touch to zero
     initTouchState(&b_state->slide_states.front);
@@ -110,14 +116,7 @@ void initBadgeState(struct BadgeState *b_state)
     initTouchState(&b_state->slide_states.mid_b);
     initTouchState(&b_state->slide_states.back);
 
-    b_state->leds = 0;
-    b_state->counter_1 = 0;
-    b_state->counter_2 = 0;
-    b_state->big_counter = 0;
-    b_state->big_counter_1 = 0;
-
-    b_state->ir_recvd_msg = 0;
-
+    //Setup IR queues
     initQueue(&b_state->ir_incoming);
     initQueue(&b_state->ir_outgoing);
 }
@@ -652,7 +651,6 @@ void switch_state(struct BadgeState* current_state,
         // Do prepwork before entering state
         //  (clear screen, init LEDs, etc)
         next_state->onEnter(next_state);
-    
 }
 
 
