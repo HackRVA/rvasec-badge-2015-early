@@ -37,6 +37,12 @@ char          bird_y_vel   = 0,
 
 DECLARE_BASE_STATE(BadgyBird)
 
+//====================
+//Extra state handlers
+HANDLER_PROTO(BadgyBirdPlay);
+
+//====================
+//Helper functions
 void set_score(unsigned char set_score);
 #endif	/* BADGYBIRD_H */
 
