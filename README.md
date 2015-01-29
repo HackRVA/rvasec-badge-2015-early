@@ -66,6 +66,12 @@ Look here for ways to help out with software. Some of these are detailed, and so
             * Dimming with pwm would be nice, bit-banged or through HW if possible.
 		* Context menu
 		    * I like the idea of having a menu that's reachable by holding the main button. Make it so states can append extra options to this menu that apply only to the state. But more general seetings could always be adjusted here (sound on off, exit stage/game). I envision it dropping down from the top of the screen, pausing what is behind it.
+        * Reading and writing to non-volatile storage
+            * We get about 1000 erase/write cycles to non-volatile memory (NVM). Need interface & need to use wisely...
+        * Sleep modes
+            * When not in use, should consider a low power or low clock mode to use less battery.
+        * Fix compiler warnings
+            * Compiler complains a lot about functions and macros being removed from peripheral includes in future releases. Is there a fix? Or are they just taking these away from us...?
 		* Handle user IO more cleanly
             * Create a single struct for the entire input state?
             * Use callbacks for different events (e.g. button pressed? Call this for me)
