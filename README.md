@@ -33,25 +33,25 @@ The basics:
 * Enter bootloader mode by holding the button while plugging in USB.  The LEDs should blink to indicate bootload mode.
 * Use bootloader software to upload new code!
 
-(Is there any particulare IDE configuration or set up needed?  Maybe just to disable warnings, or fix the warnings...)
+(Is there any particular IDE configuration or set up needed?  Maybe just to disable warnings, or fix the warnings...)
 
 TODO
 ---
 Look here for ways to help out with software. Some of these are detailed, and some are more abstract problems with the current SW design. Suggestions, ideas, and of course pull requests welcome! Once I get specific issues nailed down, I'll start adding bug/feature requests to Git hub.
 
-*Hardware
+* Hardware
 	* Determine how the battery attaches while keeping the badge useable from the lanyard and reducing stress on USB connector when plugged in to PC.
 	* Choose LCD
 	* Add schematics/board layout
 	* Include BOM on wiki and GitHub
 	* Source components
 	* Manufacture boards
-*Software
+* Software
 	* Framework
 		* Move framework components out of main and badge files
 		* Change state struct to contain function pointer for next state
 		* Create a single struct for the entire input state?
-		* Docuement App/Stage macro/API
+		* Document App/Stage macro/API
 		* Handle IR Tx/Rx
 		* Some of the old code attempted to do this, but I didn't have time in 2014 so it was shorted out of the code. Should consider using BadgeState's IR handler + some single queue of IR messages.
 		* More Graphics primitives functions
@@ -74,7 +74,7 @@ Look here for ways to help out with software. Some of these are detailed, and so
 		* I'm toying with the idea of a simple birds eye view 2d game ala pokemon, and you have to find the "stages" or "games" in the virtual game world. A lot more to do before we get to this point, though it's good to be thinking and brainstorming about.
 		* Consider integration with RVAsec CTF!
 		* Puzzles and challenges that requrie some tinkering or hackery	
-*Other
+* Other
 	* Determine how the upfront costs will be covered
 	* Make a LiveCD with DEV environment
 	* Document the API/Framework
