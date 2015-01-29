@@ -49,25 +49,24 @@ Look here for ways to help out with software. Some of these are detailed, and so
 * Software
 	* Framework
 		* Move framework components out of main and badge files
-		* Change state struct to contain function pointer for next state
 		* Create a single struct for the entire input state?
 		* Document App/Stage macro/API
 		* Handle IR Tx/Rx
-		* Some of the old code attempted to do this, but I didn't have time in 2014 so it was shorted out of the code. Should consider using BadgeState's IR handler + some single queue of IR messages.
+		    * Some of the old code attempted to do this, but I didn't have time in 2014 so it was shorted out of the code. Should consider using BadgeState's IR handler + some single queue of IR messages.
 		* More Graphics primitives functions
-		* Have shitty square and horiz/vert lines drawings. May have full color LCD, so graphics stuff could use a lot of work.
+		    * Have shitty square and horiz/vert lines drawings. May have full color LCD, so graphics stuff could use a lot of work.
 		* Standardize the more complex peripheral interfaces
-		* Mainly graphics, but a standard message queue could work nicely for IR and future tx/rx (usb? other wire protocol)
+		    * Mainly graphics, but a standard message queue could work nicely for IR and future tx/rx (usb? other wire protocol)
 		* Work with touch sliders
-		* The new badge will have the touch sliders attached to the built in capacitive touch HW on the MCU. We should research how this works. Also, getting the 2014 badge without the HW support (cap touch on the wrong ports :( ) working better would also be a plus. I think we can generally skip calibration on startup unless they select to do so.
+		    * The new badge will have the touch sliders attached to the built in capacitive touch HW on the MCU. We should research how this works. Also, getting the 2014 badge without the HW support (cap touch on the wrong ports :( ) working better would also be a plus. I think we can generally skip calibration on startup unless they select to do so.
 		* Speaker/buzzer driver
-		* We'll want to use a timer interrupt. Need to make a nice interface for letting states play sounds easily.
+		    * We'll want to use a timer interrupt. Need to make a nice interface for letting states play sounds easily.
 		* Will probably have an RGB LED this year, so a nice interface for that. 
-		* Obvious start is a 3 param function with r,g,b, but some helper functions to do fading and what not could be useful. A good pwm method would be nice for leds in general.
+		    * Obvious start is a 3 param function with r,g,b, but some helper functions to do fading and what not could be useful. A good pwm method would be nice for leds in general.
 		* Context menu
-		* I like the idea of having a menu that's reachable by holding the main button. Make it so states can append extra options to this menu that apply only to the state. But more general seetings could always be adjusted here (sound on off, exit stage/game). I envision it dropping down from the top of the screen, pausing what is behind it.
+		    * I like the idea of having a menu that's reachable by holding the main button. Make it so states can append extra options to this menu that apply only to the state. But more general seetings could always be adjusted here (sound on off, exit stage/game). I envision it dropping down from the top of the screen, pausing what is behind it.
 		* Handle user IO more cleanly
-		* Currently calling the same function to update I/O, this is perfectly maintainable, but it could probably be done better. Also, the USB stuff in ProcessIO is a mess from the very early days of dev and debug. Really needs to be sorted out.
+		    * Currently calling the same function to update I/O, this is perfectly maintainable, but it could probably be done better. Also, the USB stuff in ProcessIO is a mess from the very early days of dev and debug. Really needs to be sorted out.
 	* Apps - Simple stage ideas
 		* Clean up Badgy Bird to make a 'Best Practices' demo
 		* Space invaders, pong, tetris, etc.
