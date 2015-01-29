@@ -49,7 +49,6 @@ Look here for ways to help out with software. Some of these are detailed, and so
 * Software
 	* Framework
 		* Move framework components out of main and badge files
-		* Create a single struct for the entire input state?
 		* Document App/Stage macro/API
 		* Handle IR Tx/Rx
 		    * Some of the old code attempted to do this, but I didn't have time in 2014 so it was shorted out of the code. Should consider using BadgeState's IR handler + some single queue of IR messages.
@@ -63,9 +62,13 @@ Look here for ways to help out with software. Some of these are detailed, and so
 		    * We'll want to use a timer interrupt. Need to make a nice interface for letting states play sounds easily.
 		* Will probably have an RGB LED this year, so a nice interface for that. 
 		    * Obvious start is a 3 param function with r,g,b, but some helper functions to do fading and what not could be useful. A good pwm method would be nice for leds in general.
+        * Better backlight handling
+            * Dimming with pwm would be nice, bit-banged or through HW if possible.
 		* Context menu
 		    * I like the idea of having a menu that's reachable by holding the main button. Make it so states can append extra options to this menu that apply only to the state. But more general seetings could always be adjusted here (sound on off, exit stage/game). I envision it dropping down from the top of the screen, pausing what is behind it.
 		* Handle user IO more cleanly
+            * Create a single struct for the entire input state?
+            * Use callbacks for different events (e.g. button pressed? Call this for me)
 		    * Currently calling the same function to update I/O, this is perfectly maintainable, but it could probably be done better. Also, the USB stuff in ProcessIO is a mess from the very early days of dev and debug. Really needs to be sorted out.
 	* Apps - Simple stage ideas
 		* Clean up Badgy Bird to make a 'Best Practices' demo
