@@ -1,6 +1,6 @@
 #!/bin/bash
 PROGRAMMER=./pic32usb_x86
-HEX_PATH=../Badge15.X/dist/default/production/Badge15.X.production.hex
+HEX_PATH=../../Badge15.X/dist/default/production/Badge15.X.production.hex
 
 if [ "$#" -eq 0 ]
 then
