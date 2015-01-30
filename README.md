@@ -72,6 +72,8 @@ Look here for ways to help out with software. Some of these are detailed, and so
             * When not in use, should consider a low power or low clock mode to use less battery.
         * Fix compiler warnings
             * Compiler complains a lot about functions and macros being removed from peripheral includes in future releases. Is there a fix? Or are they just taking these away from us...?
+        * Emulated/stubebd version
+            * Add ifdefs or something to swap out libraries/interfaces so this can be easily tested on a regular desktop
 		* Handle user IO more cleanly
             * Create a single struct for the entire input state?
             * Use callbacks for different events (e.g. button pressed? Call this for me)
